@@ -152,7 +152,7 @@ def create_app() -> FastAPI:
     app = FastAPI(title="Monetize360 LinkedIn Scan API")
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "null"],
+        allow_origins=allowed_cors_origins(),
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -166,6 +166,21 @@ def create_app() -> FastAPI:
 
 def BASE_FRONTEND_DIST() -> Path:
     return Path(__file__).resolve().parent.parent / "frontend" / "dist"
+
+
+def allowed_cors_origins() -> list[str]:
+    configured = os.getenv("CORS_ORIGINS", "")
+    origins = [
+        origin.strip().rstrip("/")
+        for origin in configured.split(",")
+        if origin.strip()
+    ]
+    return [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "null",
+        *origins,
+    ]
 
 
 def report_path(report_date: str) -> Path:
