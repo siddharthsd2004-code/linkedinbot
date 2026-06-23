@@ -1,0 +1,1 @@
+run = "bash scripts/start_replit.sh"

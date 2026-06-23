@@ -11,6 +11,7 @@ from typing import Any
 
 from fastapi import APIRouter, FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 try:
@@ -157,7 +158,14 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     app.include_router(router)
+    frontend_dist = BASE_FRONTEND_DIST()
+    if frontend_dist.exists():
+        app.mount("/", StaticFiles(directory=frontend_dist, html=True), name="frontend")
     return app
+
+
+def BASE_FRONTEND_DIST() -> Path:
+    return Path(__file__).resolve().parent.parent / "frontend" / "dist"
 
 
 def report_path(report_date: str) -> Path:
