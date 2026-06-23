@@ -8,16 +8,8 @@ on:
 
 jobs:
   build-dmg:
-    name: Build DMG (${{ matrix.arch }})
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - runner: macos-13
-            arch: x64
-          - runner: macos-14
-            arch: arm64
+    name: Build DMG
+    runs-on: macos-13
 
     steps:
       - name: Checkout
@@ -57,10 +49,10 @@ jobs:
 
       - name: Build DMG
         working-directory: frontend
-        run: npm run build && npx electron-builder --mac dmg --${{ matrix.arch }}
+        run: npm run build && npx electron-builder --mac dmg --x64
 
       - name: Upload DMG artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Monetize360-LinkedIn-Scan-${{ matrix.arch }}-dmg
+          name: Monetize360-LinkedIn-Scan-mac-dmg
           path: frontend/release/*.dmg
